@@ -91,6 +91,25 @@ SocialBox.prototype.onInput = function (e) {
 
 		}
 	}else{
-		// TODO: change format for hashtags or anoter feature
+		var match = el.textContent.match(/#\w+/g);
+		var change;
+		if(el.nodeType === 3){
+			var text = el.textContent;
+			var html = text;
+			for(var index in match){
+				var span ='<span class="hash">' + match[index] +'</span>';
+				if(html.indexOf(span) == -1){
+
+					html = html.replace(match[index],span);
+					change = true;
+				}
+			}
+			if(change) {
+				console.log(text,html);
+				el.parentNode.innerHTML = el.parentNode.innerHTML.replace(text,html);
+				this.cursorLastPosition();
+			};
+		}
+
 	}
 };
