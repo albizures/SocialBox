@@ -34,6 +34,31 @@ SocialBox.prototype.isHashTag = function (el) {
 SocialBox.prototype.init = function () {
 	this.el.addEventListener('input',this.onInput.bind(this));
 };
+SocialBox.prototype.cursorLastPosition = function () {
+	var newRange = document.createRange();
+  var sel = window.getSelection();
+	var lastNode = this.getLastNode();
+	var lastIndex = lastNode.textContent.length;
+
+	newRange.setStart(lastNode, lastIndex);
+	newRange.collapse(true);
+	sel.removeAllRanges();
+	sel.addRange(newRange);
+	this.el.focus();
+};
+SocialBox.prototype.getLastNode = function (el) {
+	el = el || this.el;
+	var last = el.childNodes[el.childNodes.length - 1];
+	if(last.nodeType === 3){
+		if(last.textContent == '\n	'){
+			return this.getLastNode(last.previousSibling);
+		}else{
+			return last;
+		}
+	}else{
+		return this.getLastNode(last);
+	}
+};
 SocialBox.prototype.onInput = function (e) {
 	range = this.getSelect();
 	if(range.startContainer != range.endContainer || !range.collapsed){
@@ -45,7 +70,8 @@ SocialBox.prototype.onInput = function (e) {
 		if(text.length > 1){
 			var parent = el.parentNode;
 			el.parentNode.textContent = text[0];
-			parent.parentNode.appendChild(document.createTextNode(text[1]));
+			parent.parentNode.appendChild(document.createTextNode( ' ' + text[1]));
+			this.cursorLastPosition()
 		}else{
 			var match = el.parentNode.textContent.match(/#\w+/g);
 			if(match == null){
@@ -53,7 +79,9 @@ SocialBox.prototype.onInput = function (e) {
 					console.log(el.parentNode);
 					el.parentNode.className == '';
 				}else if(el.nodeType === 3){
+					var newEl = el.cloneNode();
 					el.parentNode.parentNode.replaceChild(el.cloneNode(),el.parentNode);
+					this.cursorLastPosition();
 				}
 			}else{
 				return;
