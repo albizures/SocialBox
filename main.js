@@ -20,6 +20,8 @@ SocialBox.prototype.WHITE_SPACE = '&nbsp';
 SocialBox.prototype.getSelect = function () {
 	return window.getSelection().getRangeAt(0);
 };
+
+// return if pass node is a hash node or node inside of node hash
 SocialBox.prototype.isHashTag = function (el) {
 	if(el.className && el.className.indexOf('hash') != -1){
 		return true;
@@ -70,7 +72,7 @@ SocialBox.prototype.onInput = function (e) {
 		if(text.length > 1){
 			var parent = el.parentNode;
 			el.parentNode.textContent = text[0];
-			parent.parentNode.appendChild(document.createTextNode( ' ' + text[1]));
+			parent.parentNode.appendChild(document.createTextNode( ' ' +  text[1]));
 			this.cursorLastPosition()
 		}else{
 			var match = el.parentNode.textContent.match(/#\w+/g);
@@ -84,11 +86,11 @@ SocialBox.prototype.onInput = function (e) {
 					this.cursorLastPosition();
 				}
 			}else{
-				return;
+				return; // correct format
 			}
 
 		}
 	}else{
-
+		// TODO: change format for hashtags or anoter feature
 	}
 };
